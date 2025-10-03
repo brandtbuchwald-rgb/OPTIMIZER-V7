@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Rediscover ATK SPD Calculator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<link rel="icon" href="assets/favicon.ico?v=26">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon.png?v=26">
+<link rel="apple-touch-icon" href="assets/favicon.png?v=26">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{ --bg:#0c0f14; --bg2:#121826; --ink:#e8ecf8; --muted:#a8b0c2; --accent:#c6a15b; --accent2:#fcd34d; --setGlow:rgba(198,161,91,.45);
+  --card:rgba(19,24,37,0.82); --border:rgba(255,255,255,0.08); --shadowA:0 10px 30px rgba(0,0,0,.4);
+  --shadowB:inset 0 1px 0 rgba(255,255,255,.06), inset 0 -1px 0 rgba(0,0,0,.4); --gradHead:linear-gradient(90deg,#3b2e13,#5a4516);
+  --gradCard:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,0)); --barBG:rgba(255,255,255,.06); --good:#22c55e;
+  --warn:#f59e0b; --glow:0 0 0 2px var(--setGlow), 0 0 22px var(--setGlow);
+}
+.theme-Abyss{ --accent:#7c3aed; --accent2:#a78bfa; --setGlow:rgba(124,58,237,.45); --gradHead:linear-gradient(90deg,#24143e,#3d2372); }
+.theme-Chaos{ --accent:#14b8a6; --accent2:#2dd4bf; --setGlow:rgba(20,184,166,.45); --gradHead:linear-gradient(90deg,#0d544e,#0f766e); }
+.theme-Original{ --accent:#ef4444; --accent2:#f87171; --setGlow:rgba(239,68,68,.45); --gradHead:linear-gradient(90deg,#7a1520,#b91c1c); }
+.theme-Primal{ --accent:#c6a15b; --accent2:#fcd34d; --setGlow:rgba(198,161,91,.45); --gradHead:linear-gradient(90deg,#3b2e13,#5a4516); }
+
+*{box-sizing:border-box} .hidden{display:none!important} html,body{height:100%}
+body{margin:0;color:var(--ink); font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,sans-serif;
+  background: radial-gradient(1200px 600px at -10% -20%, rgba(102,153,255,.12), transparent 60%),
+              radial-gradient(1000px 700px at 110% -10%, rgba(198,161,91,.12), transparent 50%),
+              linear-gradient(180deg, var(--bg), var(--bg2));}
+header{ position:sticky; top:0; z-index:50; background:var(--gradHead); color:#fff;
+  padding:18px 16px; border-bottom:1px solid var(--border); box-shadow:var(--shadowA);}
+header h1{ margin:0; font-size:20px; letter-spacing:.5px; font-family:Cinzel,serif; }
+main{max-width:1000px; margin:18px auto; padding:0 16px 120px;}
+.card{ background:var(--card); border:1px solid var(--border); border-radius:16px; box-shadow:var(--shadowA); overflow:hidden; position:relative;}
+.card>.inner{ padding:16px; }
+h2{font-size:15px; color:var(--muted); margin:0 0 10px 4px; font-weight:700; text-transform:uppercase}
+.section{display:grid; grid-template-columns:260px 1fr; gap:12px; align-items:center;}
+.row{display:contents;} label{color:var(--muted); font-weight:700}
+select,input[type="number"],input[readonly]{ width:100%; padding:12px 14px; border-radius:12px; border:1px solid var(--border);
+  background:rgba(255,255,255,.06); color:var(--ink); font-weight:700;}
+.seg{display:flex; gap:8px; flex-wrap:wrap}
+.seg button,.btn{ appearance:none; border:1px solid var(--border); border-radius:12px; padding:10px 12px; font-weight:800; cursor:pointer;}
+.bar{height:16px; background:var(--barBG); border-radius:999px; overflow:hidden; position:relative}
+.bar>div{height:100%; width:0%; background:linear-gradient(90deg, var(--accent), var(--accent2)); transition:width .25s}
+.stats{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+.stat{border-radius:14px; padding:14px; border:1px solid var(--border); background:rgba(255,255,255,.06);}
+.stat label{color:var(--muted); font-size:.9rem; margin-bottom:6px; display:block}
+.stat .value input{font-size:22px; padding:14px}
+footer{ position:fixed; bottom:0; left:0; width:100%; text-align:center; background:rgba(0,0,0,.3); color:#fff; padding:10px; font-size:13px;}
+</style>
+</head>
+
+<body class="theme-Primal">
+<header>
+  <h1>Rediscover ATK SPD Calculator</h1>
+</header>
+
+<main>
+  <div class="card"><div class="inner">
+    <h2>Base & Buffs</h2>
+    <div class="section">
+      <div class="row">
+        <label>Class</label>
+        <div class="seg" id="classSeg">
+          <button type="button" data-val="Berserker">Berserker</button>
+          <button type="button" data-val="Paladin">Paladin</button>
+          <button type="button" data-val="Ranger">Ranger</button>
+          <button type="button" data-val="Sorcerer" class="is-active">Sorcerer</button>
+        </div>
+        <select id="cls" class="hidden"></select>
+      </div>
+      <div class="row">
+        <label>Weapon</label>
+        <div class="seg" id="weaponSeg">
+          <button type="button" data-val="Original" class="is-active">Original</button>
+          <button type="button" data-val="Primal">Primal</button>
+          <button type="button" data-val="Chaos">Chaos</button>
+          <button type="button" data-val="Abyss">Abyss</button>
+          <button type="button" data-val="PvP/Boss">PvP/Boss</button>
+        </div>
+        <select id="weap" class="hidden"></select>
+      </div>
+      <div class="row">
+        <label>Equipment ATK SPD</label>
+        <input id="equip" type="number" value="0"><span class="suffix">%</span>
+      </div>
+      <div class="row">
+        <label>Rune ATK SPD</label>
+        <input id="rune" type="number" value="0"><span class="suffix">%</span>
+      </div>
+      <div class="row">
+        <label>Pet Gear</label>
+        <select id="pet"><option value="None">None</option><option value="B">B</option><option value="A">A</option><option value="S">S</option></select>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat"><label>Required ATK SPD</label><input id="requiredBox" type="number" readonly></div>
+      <div class="stat"><label>Final ATK SPD</label><input id="finalBox" type="number" readonly></div>
+    </div>
+  </div></div>
+
+  <div class="card"><div class="inner">
+    <h2>Optimizer</h2>
+    <button class="btn" id="applyBest">Apply Optimal</button>
+    <div id="bestLine"></div>
+    <div id="bestWaste"></div>
+    <h2>Alternates</h2>
+    <ul id="altList"></ul>
+  </div></div>
+</main>
+
+<footer>Guild – <strong>Rediscover Alliance</strong> | Creator – <strong>SAGE</strong></footer>
+
+<script>
+let rules=null;
+async function loadRules(){ const res=await fetch('gearRules.json'); rules=await res.json(); recalc(); }
+loadRules();
+
+const els=(ids=>ids.reduce((o,id)=>(o[id]=document.getElementById(id),o),{}))(
+ ["cls","weap","equip","rune","pet","requiredBox","finalBox","bestLine","bestWaste","altList","applyBest"]
+);
+
+function currentState(){
+  const cls=els.cls.value||"Sorcerer"; const weap=els.weap.value||"Original";
+  const baseSpd=rules.base_speeds[weap][cls]; const equip=parseFloat(els.equip.value||0)/100;
+  const rune=parseFloat(els.rune.value||0)/100; const pet=rul...
