@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -14,16 +14,17 @@
   h1 { text-align:center; margin:20px; font-family:Cinzel,serif; color:#fcd34d; }
 
   .builder-wrap { display:flex; justify-content:center; margin:20px; }
-  .builder { position:relative; width:320px; height:360px; }
+  .builder { position:relative; width:85vw; max-width:360px; height:85vw; max-height:360px; }
 
   .hunter {
     position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-    width:100px; height:100px;
+    width:25vw; height:25vw; max-width:100px; max-height:100px;
     background:url('assets/hunter.png') center/contain no-repeat;
   }
 
   .slot {
-    position:absolute; width:70px; height:70px;
+    position:absolute;
+    width:20vw; height:20vw; max-width:70px; max-height:70px;
     border:1px solid rgba(255,255,255,0.15); background:#1a1f2e;
     border-radius:12px; display:flex; align-items:center; justify-content:center;
     cursor:pointer; font-size:12px; text-align:center; padding:4px;
@@ -35,15 +36,20 @@
   .clearBtn { position:absolute; top:2px; right:4px; font-size:14px; color:#aaa; cursor:pointer; display:none; }
   .slot.filled .clearBtn { display:block; }
 
-  /* Ring positions (percent based) */
+  /* Ring positions */
   .Helm { top:5%; left:50%; transform:translateX(-50%); }
-  .Necklace { top:20%; left:10%; }
-  .Chest { top:20%; right:10%; }
-  .Weapon { top:45%; left:0; }
-  .Gloves { top:45%; right:0; }
-  .Ring { bottom:20%; left:10%; }
-  .Boots { bottom:20%; right:10%; }
+  .Necklace { top:20%; left:5%; }
+  .Chest { top:20%; right:5%; }
+  .Weapon { top:50%; left:0; transform:translateY(-50%); }
+  .Gloves { top:50%; right:0; transform:translateY(-50%); }
+  .Ring { bottom:20%; left:5%; }
+  .Boots { bottom:20%; right:5%; }
   .Belt { bottom:0; left:50%; transform:translateX(-50%); }
+
+  @media (max-width: 400px) {
+    .slot { width:18vw; height:18vw; font-size:11px; }
+    .hunter { width:22vw; height:22vw; }
+  }
 
   /* Modal */
   #modal { position:fixed; inset:0; background:rgba(0,0,0,.75);
