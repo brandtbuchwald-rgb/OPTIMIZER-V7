@@ -1,48 +1,50 @@
 {
   "GearStats": {
     "Primal": {
-      "slot": "3",
+      "slot": 3,
       "stats": {
-        "Evasion": "10-12%",
-        "Attack Speed": "10-12%",
-        "Crit Chance": "10-12%",
-        "Attack%": "20-23%",
-        "Crit Damage": "25-35%",
-        "HP%": "20-23%",
-        "DEF%": "20-23%",
-        "DR%": "15-17%",
-        "Racial Damage": "25-35%",
-        "Lifesteal": "15-17%"
-      }
+        "Evasion": { "min": 12, "max": 14 },
+        "Attack Speed": { "min": 12, "max": 14 },
+        "Crit Chance": { "min": 12, "max": 14 },
+        "Attack%": { "min": 23, "max": 28 },
+        "Crit Damage": { "min": 35, "max": 40 },
+        "HP%": { "min": 23, "max": 28 },
+        "DEF%": { "min": 23, "max": 28 },
+        "DR%": { "min": 17, "max": 20 },
+        "Racial Damage": { "min": 35, "max": 40 },
+        "Lifesteal": { "min": 17, "max": 20 }
+      },
+      "options": []
     },
     "Original": {
-      "slot": "4",
+      "slot": 4,
       "stats": {
-        "Evasion": "12-14%",
-        "Attack Speed": "12-14%",
-        "Crit Chance": "12-14%",
-        "Attack%": "22-25%",
-        "Crit Damage": "30-40%",
-        "HP%": "22-25%",
-        "DEF%": "22-25%",
-        "DR%": "17-20%",
-        "Racial Damage": "30-40%",
-        "Lifesteal": "17-20%"
-      }
+        "Evasion": { "min": 14, "max": 16 },
+        "Attack Speed": { "min": 14, "max": 16 },
+        "Crit Chance": { "min": 14, "max": 16 },
+        "Attack%": { "min": 25, "max": 30 },
+        "Crit Damage": { "min": 37, "max": 42 },
+        "HP%": { "min": 25, "max": 30 },
+        "DEF%": { "min": 25, "max": 30 },
+        "DR%": { "min": 19, "max": 22 },
+        "Racial Damage": { "min": 37, "max": 42 },
+        "Lifesteal": { "min": 19, "max": 22 }
+      },
+      "options": []
     },
     "Chaos": {
-      "slot": "4+option",
+      "slot": 4,
       "stats": {
-        "Evasion": "14-16%",
-        "Attack Speed": "14-16%",
-        "Crit Chance": "14-16%",
-        "Attack%": "25-30%",
-        "Crit Damage": "35-45%",
-        "HP%": "25-30%",
-        "DEF%": "25-30%",
-        "DR%": "20-23%",
-        "Racial Damage": "35-45%",
-        "Lifesteal": "20-23%"
+        "Evasion": { "min": 16, "max": 18 },
+        "Attack Speed": { "min": 16, "max": 18 },
+        "Crit Chance": { "min": 16, "max": 18 },
+        "Attack%": { "min": 28, "max": 35 },
+        "Crit Damage": { "min": 40, "max": 45 },
+        "HP%": { "min": 28, "max": 35 },
+        "DEF%": { "min": 28, "max": 35 },
+        "DR%": { "min": 23, "max": 25 },
+        "Racial Damage": { "min": 40, "max": 45 },
+        "Lifesteal": { "min": 23, "max": 25 }
       },
       "options": [
         "Crit Damage +80%",
@@ -51,24 +53,39 @@
       ]
     },
     "Abyss": {
-      "slot": "4+option",
+      "slot": 4,
       "stats": {
-        "Evasion": "16-18%",
-        "Attack Speed": "16-18%",
-        "Crit Chance": "16-18%",
-        "Attack%": "28-35%",
-        "Crit Damage": "40-45%",
-        "HP%": "28-35%",
-        "DEF%": "28-35%",
-        "DR%": "23-25%",
-        "Racial Damage": "40-45%",
-        "Lifesteal": "23-25%"
+        "Evasion": { "min": 18, "max": 20 },
+        "Attack Speed": { "min": 18, "max": 20 },
+        "Crit Chance": { "min": 18, "max": 20 },
+        "Attack%": { "min": 30, "max": 38 },
+        "Crit Damage": { "min": 45, "max": 50 },
+        "HP%": { "min": 30, "max": 38 },
+        "DEF%": { "min": 30, "max": 38 },
+        "DR%": { "min": 25, "max": 28 },
+        "Racial Damage": { "min": 45, "max": 50 },
+        "Lifesteal": { "min": 25, "max": 28 }
       },
       "options": [
         "Crit Damage +80%",
         "HP% +52%",
         "Boss Damage +25%"
       ]
+    },
+    "Runes": {
+      "slot": 1,
+      "stats": {
+        "Evasion": { "min": 4, "max": 6 },
+        "Attack Speed": { "min": 4, "max": 6 },
+        "Crit Chance": { "min": 4, "max": 6 },
+        "Attack%": { "min": 6, "max": 8 },
+        "Crit Damage": { "min": 10, "max": 12 },
+        "HP%": { "min": 6, "max": 8 },
+        "DEF%": { "min": 6, "max": 8 },
+        "DR%": { "min": 4, "max": 6 },
+        "Racial Damage": { "min": 10, "max": 12 }
+      },
+      "options": []
     }
   }
 }
