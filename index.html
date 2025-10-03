@@ -1,4 +1,4 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -23,12 +23,12 @@
     .gear-circle {
       position: relative;
       width: 100%;
-      max-width: 440px;
+      max-width: 460px;
       margin: 0 auto;
       aspect-ratio: 1;
     }
 
-    /* Bigger golden guide ring */
+    /* Golden guide ring */
     .gear-circle::before {
       content: "";
       position: absolute;
@@ -59,17 +59,23 @@
       cursor: pointer;
       transition: all 0.2s ease-in-out;
       z-index: 1;
+      transform: translate(-50%, -50%);
     }
 
-    /* Clock-style snapping */
-    .Helm    { top: 5%;  left: 50%; transform: translateX(-50%); }
-    .Necklace{ top: 20%; left: 15%; }
-    .Weapon  { top: 50%; left: 5%;  transform: translateY(-50%); }
-    .Ring    { bottom: 20%; left: 15%; }
-    .Belt    { bottom: 5%; left: 50%; transform: translateX(-50%); }
-    .Boots   { bottom: 20%; right: 15%; }
-    .Gloves  { top: 50%; right: 5%;  transform: translateY(-50%); }
-    .Chest   { top: 20%; right: 15%; }
+    /* Position slots like a clock using CSS variables */
+    .Helm    { --angle: 270deg; }
+    .Chest   { --angle: 315deg; }
+    .Gloves  { --angle:   0deg; }
+    .Boots   { --angle:  45deg; }
+    .Belt    { --angle:  90deg; }
+    .Ring    { --angle: 135deg; }
+    .Weapon  { --angle: 180deg; }
+    .Necklace{ --angle: 225deg; }
+
+    .slot {
+      top: calc(50% + 40% * sin(var(--angle)));
+      left: calc(50% + 40% * cos(var(--angle)));
+    }
 
     .clear-all {
       margin-top: 20px;
@@ -99,7 +105,7 @@
       padding: 20px;
       border-radius: 8px;
       width: 90%;
-      max-width: 400px;
+      max-width: 420px;
       text-align: left;
     }
     .modal-content h2 {
@@ -120,7 +126,7 @@
     }
     select, input {
       width: 100%;
-      margin: 5px 0 15px;
+      margin: 5px 0 10px;
       padding: 6px;
       border-radius: 5px;
       border: 1px solid #555;
@@ -135,6 +141,13 @@
       color: white;
       cursor: pointer;
     }
+
+    .field-row {
+      display: flex;
+      gap: 6px;
+    }
+    .field-row select { flex: 2; }
+    .field-row input { flex: 1; }
 
     /* Responsive scaling */
     @media (max-width: 500px) {
@@ -190,26 +203,71 @@
       <label>Special / Option</label>
       <input type="text" id="specialInput" placeholder="Special ability">
 
-      <label>Line 1</label>
-      <input type="text" id="line1" placeholder="Stat / Value">
-      <label>Line 2</label>
-      <input type="text" id="line2" placeholder="Stat / Value">
-      <label>Line 3</label>
-      <input type="text" id="line3" placeholder="Stat / Value">
-      <label>Line 4</label>
-      <input type="text" id="line4" placeholder="Stat / Value">
+      <div id="lines"></div>
 
-      <button class="save" onclick="saveGear()">Save</button>
+      <button class="save" id="saveBtn">Save</button>
     </div>
   </div>
 
   <script>
     let currentSlot = null;
 
+    // Superset of stat options
+    const DEFAULT_STAT_OPTIONS = [
+      'ATK%', 'ATK', 'ATK SPD',
+      'Crit Chance', 'Crit Damage',
+      'HP%', 'HP', 'DEF%', 'DEF',
+      'Evasion', 'Accuracy', 'Block', 'Penetration',
+      'Damage Reduction %', 'Damage Reduction Chance',
+      'Ignore Enemy DEF',
+      'Boss Damage', 'Primate Damage', 'Demon Damage', 'Undead Damage',
+      'Monster Damage',
+      'Lifesteal', 'Skill Damage', 'Weapon Skill',
+      'PvP Damage', 'PvP Damage Reduction'
+    ];
+
+    let statOptions = DEFAULT_STAT_OPTIONS;
+
+    function buildLines() {
+      const linesDiv = document.getElementById("lines");
+      linesDiv.innerHTML = "";
+      for (let i = 1; i <= 4; i++) {
+        const row = document.createElement("div");
+        row.className = "section";
+
+        const label = document.createElement("label");
+        label.textContent = "Line " + i;
+
+        const field = document.createElement("div");
+        field.className = "field-row";
+
+        const sel = document.createElement("select");
+        sel.id = `line${i}Stat`;
+        statOptions.forEach(s => {
+          const o = document.createElement("option");
+          o.value = s; o.text = s;
+          sel.appendChild(o);
+        });
+
+        const val = document.createElement("input");
+        val.type = "number";
+        val.step = "0.01";
+        val.placeholder = "Value";
+        val.id = `line${i}Val`;
+
+        field.appendChild(sel);
+        field.appendChild(val);
+        row.appendChild(label);
+        row.appendChild(field);
+        linesDiv.appendChild(row);
+      }
+    }
+
     // Open modal when slot clicked
     document.querySelectorAll('.slot').forEach(slot => {
       slot.addEventListener('click', () => {
         currentSlot = slot;
+        buildLines();
         document.getElementById('gearModal').style.display = 'flex';
       });
     });
@@ -218,16 +276,27 @@
       document.getElementById('gearModal').style.display = 'none';
     }
 
-    function saveGear() {
-      if (currentSlot) {
-        let tier = document.getElementById('tierSelect').value;
-        let rune = document.getElementById('runeSelect').value;
-        let special = document.getElementById('specialInput').value;
-        currentSlot.innerText = tier;
-        if (special) currentSlot.innerText += "\\n" + special;
+    document.getElementById("saveBtn").addEventListener("click", () => {
+      if (!currentSlot) return;
+
+      const slotData = {
+        tier: document.getElementById("tierSelect").value,
+        rune: document.getElementById("runeSelect").value,
+        runeValue: document.getElementById("runeValue").value,
+        special: document.getElementById("specialInput").value,
+        lines: []
+      };
+      for (let i = 1; i <= 4; i++) {
+        slotData.lines.push({
+          stat: document.getElementById(`line${i}Stat`).value,
+          value: document.getElementById(`line${i}Val`).value
+        });
       }
+      currentSlot.innerText = slotData.tier;
+      if (slotData.special) currentSlot.innerText += "\n" + slotData.special;
+
       closeModal();
-    }
+    });
 
     function clearAll() {
       document.querySelectorAll('.slot').forEach(slot => {
