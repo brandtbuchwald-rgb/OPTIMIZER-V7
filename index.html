@@ -9,7 +9,7 @@
   h1 { margin:20px 0; font-size:22px; }
   .builder {
     position: relative;
-    width: 300px; height: 400px;
+    width: 320px; height: 420px;
     margin: 40px auto;
   }
   .slot {
@@ -20,7 +20,7 @@
     border-radius: 12px;
     display: flex; align-items: center; justify-content: center;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 13px;
     text-align: center;
     padding: 4px;
   }
@@ -31,14 +31,14 @@
     width: 100px; height: 100px;
     background: url('assets/hunter.png') center/contain no-repeat;
   }
-  /* EHT ring positions */
+  /* Ring positions */
   .Helm { top: 0; left: 50%; transform: translate(-50%, 0); }
   .Necklace { top: 70px; left: 0; }
   .Chest { top: 70px; right: 0; }
-  .Weapon { top: 150px; left: 0; }
-  .Gloves { top: 150px; right: 0; }
-  .Ring { top: 230px; left: 0; }
-  .Boots { top: 230px; right: 0; }
+  .Weapon { top: 160px; left: 0; }
+  .Gloves { top: 160px; right: 0; }
+  .Ring { top: 250px; left: 0; }
+  .Boots { top: 250px; right: 0; }
   .Belt { bottom: 0; left: 50%; transform: translate(-50%, 0); }
 
   #modal {
@@ -47,9 +47,11 @@
   }
   #modal .inner {
     background:#222; padding:20px; border-radius:12px;
-    width:90%; max-width:500px; text-align:left;
+    width:95%; max-width:500px; text-align:left;
+    color:#fff;
   }
-  select,input { width:100%; margin:6px 0; padding:8px; border-radius:6px; }
+  label { display:block; margin-top:8px; font-weight:bold; }
+  select,input { width:100%; margin:4px 0; padding:6px; border-radius:6px; }
   button { padding:10px 16px; margin:8px 4px; border:0; border-radius:8px; font-weight:bold; cursor:pointer; }
   .save { background:#22c55e; }
   .close { background:#ef4444; }
@@ -73,12 +75,18 @@
   <div id="modal">
     <div class="inner">
       <h2 id="modalTitle"></h2>
-      <label>Pick Item:</label>
-      <select id="itemSelect"></select>
-      <label>Tier/Type:</label>
-      <input id="tierBox" readonly>
-      <label>Special/Ability:</label>
-      <input id="abilityBox" readonly>
+      <label>Tier</label>
+      <select id="tierSelect"></select>
+
+      <label>Rune</label>
+      <select id="runeSelect"></select>
+      <input id="runeValue" type="number" placeholder="Value">
+
+      <label>Special / Option</label>
+      <input id="specialInput" type="text">
+
+      <div id="lines"></div>
+
       <div style="margin-top:10px;">
         <button class="save" id="saveBtn">Save</button>
         <button class="close" id="closeBtn">Close</button>
@@ -86,91 +94,97 @@
     </div>
   </div>
 
-  <script>
-    let gearDefs={}, chosenGear={};
-    async function loadDefs(){
-      const res=await fetch("gearDefs.json");
-      gearDefs=await res.json();
-    }
-    loadDefs();
+<script>
+let gearDefs={}, chosenGear={}, statOptions=[];
 
-    const modal=document.getElementById("modal");
-    const itemSelect=document.getElementById("itemSelect");
-    const tierBox=document.getElementById("tierBox");
-    const abilityBox=document.getElementById("abilityBox");
-    const modalTitle=document.getElementById("modalTitle");
+async function loadDefs(){
+  const res=await fetch("gearDefs.json");
+  gearDefs=await res.json();
 
-    let currentSlot=null;
+  // Build Tier dropdown
+  const tierSelect=document.getElementById("tierSelect");
+  for(const tier of Object.keys(gearDefs.GearStats||{})){
+    const opt=document.createElement("option");
+    opt.value=tier; opt.text=tier;
+    tierSelect.appendChild(opt);
+  }
 
-    document.querySelectorAll(".slot").forEach(slot=>{
-      slot.addEventListener("click",()=>{
-        currentSlot=slot.dataset.slot;
-        modalTitle.textContent="Edit "+currentSlot;
-        buildOptions(currentSlot);
-        modal.style.display="flex";
-      });
+  // Simple rune list for now
+  const runes=["None","ATK SPD","Crit Chance","Evasion","DR"];
+  const runeSelect=document.getElementById("runeSelect");
+  runes.forEach(r=>{
+    const o=document.createElement("option");o.value=r;o.text=r;
+    runeSelect.appendChild(o);
+  });
+
+  // Collect stat keys
+  const statSet=new Set();
+  for(const tier in gearDefs.GearStats){
+    const obj=gearDefs.GearStats[tier];
+    for(const s in obj.stats){ if(s) statSet.add(s); }
+  }
+  statOptions=[...statSet];
+}
+loadDefs();
+
+const modal=document.getElementById("modal");
+const modalTitle=document.getElementById("modalTitle");
+let currentSlot=null;
+
+// Slot click
+document.querySelectorAll(".slot").forEach(slot=>{
+  slot.addEventListener("click",()=>{
+    currentSlot=slot.dataset.slot;
+    modalTitle.textContent="Edit "+currentSlot;
+    buildLines();
+    modal.style.display="flex";
+  });
+});
+
+// Build 4 line inputs
+function buildLines(){
+  const linesDiv=document.getElementById("lines");
+  linesDiv.innerHTML="";
+  for(let i=1;i<=4;i++){
+    const wrap=document.createElement("div");
+    wrap.innerHTML=`<label>Line ${i}</label>`;
+    const sel=document.createElement("select");
+    statOptions.forEach(s=>{
+      const o=document.createElement("option");
+      o.value=s; o.text=s; sel.appendChild(o);
     });
+    const val=document.createElement("input");
+    val.type="number"; val.placeholder="Value";
+    val.id=`line${i}Val`;
+    sel.id=`line${i}Stat`;
+    wrap.appendChild(sel); wrap.appendChild(val);
+    linesDiv.appendChild(wrap);
+  }
+}
 
-    function buildOptions(slot){
-      itemSelect.innerHTML="";
-      // Tier-based gear
-      for(const [tier,obj] of Object.entries(gearDefs.GearStats||{})){
-        if(obj.slot && obj.slot.toLowerCase().includes(slot.toLowerCase())){
-          const opt=document.createElement("option");
-          opt.value=`${tier} ${slot}`;
-          opt.text=`${tier} ${slot}`;
-          opt.dataset.tier=tier;
-          opt.dataset.ability=obj.purple_line||"";
-          itemSelect.appendChild(opt);
-        }
-      }
-      // Unique gear
-      for(const [name,u] of Object.entries(gearDefs.UniqueGear||{})){
-        if(u.slot && u.slot.toLowerCase()===slot.toLowerCase()){
-          const opt=document.createElement("option");
-          opt.value=name;
-          opt.text=name;
-          opt.dataset.tier=u.tier;
-          opt.dataset.ability=u.ability||u.unique_skill||"";
-          itemSelect.appendChild(opt);
-        }
-      }
-      // Weapons: World Boss/PvP
-      if(slot==="Weapon"){
-        for(const [name,w] of Object.entries(gearDefs.WorldBossWeapons||{})){
-          const opt=document.createElement("option");
-          opt.value=name;
-          opt.text=`WB • ${name}`;
-          opt.dataset.tier=w.type;
-          opt.dataset.ability=w.proc?.skill||"";
-          itemSelect.appendChild(opt);
-        }
-        for(const [name,w] of Object.entries(gearDefs.PvPWeapons||{})){
-          const opt=document.createElement("option");
-          opt.value=name;
-          opt.text=`PvP • ${name}`;
-          opt.dataset.tier=w.type;
-          opt.dataset.ability=w.proc?.skill||"";
-          itemSelect.appendChild(opt);
-        }
-      }
-      updateDetails();
-    }
-
-    function updateDetails(){
-      const opt=itemSelect.options[itemSelect.selectedIndex];
-      tierBox.value=opt?.dataset.tier||"";
-      abilityBox.value=opt?.dataset.ability||"";
-    }
-    itemSelect.addEventListener("change",updateDetails);
-
-    document.getElementById("saveBtn").addEventListener("click",()=>{
-      if(!currentSlot) return;
-      chosenGear[currentSlot]=itemSelect.value;
-      document.querySelector(`.slot[data-slot='${currentSlot}']`).textContent=itemSelect.value;
-      modal.style.display="none";
+// Save
+document.getElementById("saveBtn").addEventListener("click",()=>{
+  if(!currentSlot) return;
+  const slotData={
+    tier: document.getElementById("tierSelect").value,
+    rune: document.getElementById("runeSelect").value,
+    runeValue: document.getElementById("runeValue").value,
+    special: document.getElementById("specialInput").value,
+    lines:[]
+  };
+  for(let i=1;i<=4;i++){
+    slotData.lines.push({
+      stat: document.getElementById(`line${i}Stat`).value,
+      value: document.getElementById(`line${i}Val`).value
     });
-    document.getElementById("closeBtn").addEventListener("click",()=>modal.style.display="none");
-  </script>
+  }
+  chosenGear[currentSlot]=slotData;
+  document.querySelector(`.slot[data-slot='${currentSlot}']`).textContent=
+    slotData.tier+" "+currentSlot;
+  modal.style.display="none";
+});
+
+document.getElementById("closeBtn").addEventListener("click",()=>modal.style.display="none");
+</script>
 </body>
 </html>
