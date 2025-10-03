@@ -1,56 +1,74 @@
-
-    {
-  "stats": {
-    "Crit Damage": {
-      "Primal": { "min": 25, "max": 35 },
-      "Original": { "min": 30, "max": 35 },
-      "Chaos": { "min": 35, "max": 40 },
-      "Abyss": { "min": 40, "max": 45 },
-      "Rune": { "min": 20, "max": 28 }
+{
+  "GearStats": {
+    "Primal": {
+      "slot": "3",
+      "stats": {
+        "Evasion": "10-12%",
+        "Attack Speed": "10-12%",
+        "Crit Chance": "10-12%",
+        "Attack%": "20-23%",
+        "Crit Damage": "25-35%",
+        "HP%": "20-23%",
+        "DEF%": "20-23%",
+        "DR%": "15-17%",
+        "Racial Damage": "25-35%",
+        "Lifesteal": "15-17%"
+      }
     },
-    "Crit Chance": {
-      "Primal": { "min": 6, "max": 12 },
-      "Original": { "min": 8, "max": 12 },
-      "Chaos": { "min": 10, "max": 14 },
-      "Abyss": { "min": 12, "max": 14 },
-      "Rune": { "min": 6, "max": 6 }
+    "Original": {
+      "slot": "4",
+      "stats": {
+        "Evasion": "12-14%",
+        "Attack Speed": "12-14%",
+        "Crit Chance": "12-14%",
+        "Attack%": "22-25%",
+        "Crit Damage": "30-40%",
+        "HP%": "22-25%",
+        "DEF%": "22-25%",
+        "DR%": "17-20%",
+        "Racial Damage": "30-40%",
+        "Lifesteal": "17-20%"
+      }
     },
-    "Evasion": {
-      "Primal": { "min": 12, "max": 14 },
-      "Original": { "min": 12, "max": 14 },
-      "Chaos": { "min": 14, "max": 16 },
-      "Abyss": { "min": 16, "max": 18 },
-      "Rune": { "min": 6, "max": 6 }
+    "Chaos": {
+      "slot": "4+option",
+      "stats": {
+        "Evasion": "14-16%",
+        "Attack Speed": "14-16%",
+        "Crit Chance": "14-16%",
+        "Attack%": "25-30%",
+        "Crit Damage": "35-45%",
+        "HP%": "25-30%",
+        "DEF%": "25-30%",
+        "DR%": "20-23%",
+        "Racial Damage": "35-45%",
+        "Lifesteal": "20-23%"
+      },
+      "options": [
+        "Crit Damage +80%",
+        "HP% +52%",
+        "Boss Damage +25%"
+      ]
+    },
+    "Abyss": {
+      "slot": "4+option",
+      "stats": {
+        "Evasion": "16-18%",
+        "Attack Speed": "16-18%",
+        "Crit Chance": "16-18%",
+        "Attack%": "28-35%",
+        "Crit Damage": "40-45%",
+        "HP%": "28-35%",
+        "DEF%": "28-35%",
+        "DR%": "23-25%",
+        "Racial Damage": "40-45%",
+        "Lifesteal": "23-25%"
+      },
+      "options": [
+        "Crit Damage +80%",
+        "HP% +52%",
+        "Boss Damage +25%"
+      ]
     }
-  },
-  "special": {
-    "Weapon": ["Crit Damage", "HP"],
-    "Necklace": ["Crit Damage "],
-    "Ring": ["Crit Damage "],
-    "Helm": ["Boss Damage ", "HP"],
-    "Chest": ["Attack "],
-    "Belt": ["HP", "Boss damage"],
-    "Gloves": ["Attack "],
-    "Boots": ["Attack "]
-  },
-  "tiers": {
-    "Primal": { "lines": 3, "special": false },
-    "Original": { "lines": 4, "special": false },
-    "Chaos": { "lines": 4, "special": true },
-    "Abyss": { "lines": 4, "special": true }
   }
 }
-    "ATK SPD": {},
-    "ATK%": {},
-    "HP%": {},
-    "DEF%": {},
-    "DR%": {},
-    "Boss Damage": {},
-    "Primate Damage": {},
-    "Undead Damage": {},
-    "Demon Damage": {},
-    "Animal Damage": {},
-    "Monster Damage": {},
-    "Lifesteal": {},
-    "Transform to Demon Lord": {},
-  },
