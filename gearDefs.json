@@ -24,14 +24,14 @@
     }
   },
   "special": {
-    "Weapon": ["Crit Damage +80%", "Transform to Demon Lord"],
-    "Necklace": ["Crit Damage +60%"],
-    "Ring": ["Crit Damage +60%"],
-    "Helm": ["Boss Damage +25%", "HP% +52%"],
-    "Chest": ["HP% +52%"],
-    "Belt": ["DR% +40%"],
-    "Gloves": ["Attack% +52%"],
-    "Boots": ["Evasion +20%"]
+    "Weapon": ["Crit Damage", "HP"],
+    "Necklace": ["Crit Damage "],
+    "Ring": ["Crit Damage "],
+    "Helm": ["Boss Damage ", "HP"],
+    "Chest": ["Attack "],
+    "Belt": ["HP", "Boss damage"],
+    "Gloves": ["Attack "],
+    "Boots": ["Attack "]
   },
   "tiers": {
     "Primal": { "lines": 3, "special": false },
@@ -52,9 +52,5 @@
     "Animal Damage": {},
     "Monster Damage": {},
     "Lifesteal": {},
-    "Skill Damage": {},
-    "Weapon Skill": {},
-    "Ignore Enemy DEF": {},
-    "PvP Damage": {},
-    "PvP Damage Reduction": {}
+    "Transform to Demon Lord": {},
   },
