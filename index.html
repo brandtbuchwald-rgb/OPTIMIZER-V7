@@ -1,225 +1,248 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Rediscover • Gear Builder</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    body {
-      background: #111;
-      color: #f5d76e;
-      font-family: Cinzel, serif;
-      text-align: center;
-    }
-    h1 {
-      margin: 20px;
-      font-size: 28px;
-      text-shadow: 0 0 10px #f5d76e;
-    }
-    .circle {
-      position: relative;
-      width: 400px;
-      height: 400px;
-      margin: 20px auto;
-      border-radius: 50%;
-      box-shadow: 0 0 40px 10px rgba(245,215,110,0.4);
-    }
-    .slot {
-      position: absolute;
-      width: 90px;
-      height: 90px;
-      line-height: 90px;
-      background: #222;
-      color: #ccc;
-      border-radius: 10px;
-      cursor: pointer;
-      box-shadow: 0 0 10px #000;
-    }
-    .slot.glow {
-      box-shadow: 0 0 20px 4px #f5d76e;
-      color: #fff;
-    }
-    #clearAll {
-      background: #e74c3c;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      padding: 10px 20px;
-      font-size: 16px;
-      margin-top: 20px;
-      cursor: pointer;
-    }
+    body { background:#0d0d0d; color:#f5d76e; font-family:Cinzel,serif; margin:0; text-align:center; }
+    h1 { margin:20px; font-size:28px; text-shadow:0 0 10px #f5d76e; }
+
+    .circle { position:relative; width:min(92vw,480px); height:min(92vw,480px); margin:12px auto 4px; border-radius:50%;
+      box-shadow:0 0 40px 10px rgba(245,215,110,.35); }
+    .circle::before{ content:""; position:absolute; inset:7%; border-radius:50%;
+      border:2px solid rgba(245,215,110,.35); box-shadow:0 0 35px rgba(245,215,110,.45); }
+
+    .slot { position:absolute; width:90px; height:90px; background:#222; color:#ccc; border-radius:10px;
+      display:flex; align-items:center; justify-content:center; box-shadow:0 0 10px #000; cursor:pointer;
+      transform:translate(-50%,-50%); }
+    .slot.glow { box-shadow:0 0 20px 4px #f5d76e, inset 0 0 10px rgba(245,215,110,.35); color:#fff; }
+
+    /* clock positions via CSS vars */
+    .Helm     { --a:270deg; }
+    .Chest    { --a:315deg; }
+    .Gloves   { --a:  0deg; }
+    .Boots    { --a: 45deg; }
+    .Belt     { --a: 90deg; }
+    .Ring     { --a:135deg; }
+    .Weapon   { --a:180deg; }
+    .Necklace { --a:225deg; }
+    .slot { top:calc(50% + 40% * sin(var(--a))); left:calc(50% + 40% * cos(var(--a))); }
+
+    #clearAll { background:#e74c3c; color:#fff; border:0; border-radius:6px; padding:10px 18px; font-size:16px; margin:10px 0 18px; cursor:pointer; }
+
     /* Modal */
-    #gearModal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.7);
-      z-index: 100;
-      justify-content: center;
-      align-items: center;
+    #gearModal { display:none; position:fixed; inset:0; background:rgba(0,0,0,.75); z-index:100;
+      justify-content:center; align-items:center; padding:16px; }
+    .modal-content { background:#1e1e1e; color:#fff; width:min(94vw,440px); border-radius:12px; padding:16px 16px 18px; box-shadow:0 20px 40px #000; text-align:left; }
+    .modal-header { display:flex; justify-content:space-between; align-items:center; color:#f5d76e; font-size:20px; margin-bottom:8px; }
+    .close { cursor:pointer; font-size:26px; color:#ff4d4d; font-weight:700; text-shadow:0 0 8px rgba(255,0,0,.7); }
+    .close:hover { color:#ff1a1a; text-shadow:0 0 12px rgba(255,0,0,1); }
+
+    label { display:block; margin-top:10px; font-weight:600; color:#e8e8e8; }
+    select, input { width:100%; margin-top:6px; padding:8px; border-radius:8px; border:1px solid #444; background:#121212; color:#fff; }
+    .row { display:flex; gap:8px; align-items:center; }
+    .row > *:first-child { flex: 2; } .row > *:last-child { flex: 1; }
+    .hint { font-size:11px; color:#a8b0c2; margin-top:4px; }
+
+    #specialWrapper label { color:#b78cff; }
+    .saveBtn { background:#2ecc71; border:0; color:#fff; border-radius:8px; padding:10px 14px; font-weight:700; cursor:pointer; margin-top:14px; }
+
+    @media (max-width:480px){
+      .slot { width:74px; height:74px; font-size:13px; }
+      .circle::before{ inset:10%; }
     }
-    .modal-content {
-      background: #222;
-      padding: 20px;
-      border-radius: 10px;
-      width: 350px;
-      color: #fff;
-      text-align: left;
-      box-shadow: 0 0 20px #000;
-    }
-    .modal-header {
-      font-size: 20px;
-      color: #f5d76e;
-      margin-bottom: 10px;
-      display: flex;
-      justify-content: space-between;
-    }
-    .close {
-      cursor: pointer;
-      font-size: 20px;
-      color: #e74c3c;
-      font-weight: bold;
-    }
-    label {
-      display: block;
-      margin-top: 10px;
-    }
-    select, input {
-      width: 100%;
-      margin-top: 5px;
-      padding: 5px;
-      border-radius: 4px;
-      border: none;
-    }
-    #specialWrapper label {
-      color: purple;
-      font-weight: bold;
-    }
-    button.saveBtn {
-      background: #2ecc71;
-      color: white;
-      border: none;
-      margin-top: 15px;
-      padding: 10px 15px;
-      border-radius: 6px;
-      cursor: pointer;
+    @media (max-width:360px){
+      .slot { width:62px; height:62px; font-size:11px; }
+      .circle::before{ inset:12%; }
     }
   </style>
 </head>
 <body>
   <h1>Rediscover • Gear Builder</h1>
+
   <div class="circle" id="gearCircle">
-    <div class="slot" style="top:10px; left:155px;" data-slot="Helm">Helm</div>
-    <div class="slot" style="top:80px; right:40px;" data-slot="Chest">Chest</div>
-    <div class="slot" style="top:230px; right:40px;" data-slot="Gloves">Gloves</div>
-    <div class="slot" style="top:330px; left:155px;" data-slot="Boots">Boots</div>
-    <div class="slot" style="top:230px; left:40px;" data-slot="Ring">Ring</div>
-    <div class="slot" style="top:80px; left:40px;" data-slot="Necklace">Necklace</div>
-    <div class="slot" style="top:155px; left:0px;" data-slot="Weapon">Weapon</div>
-    <div class="slot" style="top:330px; left:155px;" data-slot="Belt">Belt</div>
+    <div class="slot Helm"     data-slot="Helm">Helm</div>
+    <div class="slot Necklace" data-slot="Necklace">Necklace</div>
+    <div class="slot Weapon"   data-slot="Weapon">Weapon</div>
+    <div class="slot Ring"     data-slot="Ring">Ring</div>
+    <div class="slot Belt"     data-slot="Belt">Belt</div>
+    <div class="slot Boots"    data-slot="Boots">Boots</div>
+    <div class="slot Gloves"   data-slot="Gloves">Gloves</div>
+    <div class="slot Chest"    data-slot="Chest">Chest</div>
   </div>
+
   <button id="clearAll">Clear All</button>
 
   <!-- Modal -->
   <div id="gearModal">
     <div class="modal-content">
       <div class="modal-header">
-        <span>Edit Gear</span>
+        <span id="modalTitle">Edit Gear</span>
         <span class="close" id="closeModal">&times;</span>
       </div>
+
       <label for="tier">Tier</label>
-      <select id="tier">
-        <option value="Primal">Primal</option>
-        <option value="Original">Original</option>
-        <option value="Chaos">Chaos</option>
-        <option value="Abyss">Abyss</option>
-      </select>
+      <select id="tier"></select>
+
       <label for="rune">Rune</label>
-      <select id="rune"></select>
-      <input id="runeValue" type="text" placeholder="Rune Value">
+      <div class="row">
+        <select id="rune"></select>
+        <input id="runeValue" type="number" step="0.01" placeholder="Value" />
+      </div>
 
       <div id="specialWrapper" style="display:none;">
         <label for="special">Option</label>
-        <select id="special"></select>
-        <input id="specialValue" type="text" placeholder="Value">
+        <div class="row">
+          <select id="special"></select>
+          <input id="specialValue" type="number" step="0.01" placeholder="Value" />
+        </div>
+        <div class="hint">Option is the purple stat. Pick one and enter a value for now.</div>
       </div>
 
       <div id="linesWrapper"></div>
+
       <button class="saveBtn" id="saveGear">Save</button>
     </div>
   </div>
 
   <script>
-    const slots = document.querySelectorAll('.slot');
-    const modal = document.getElementById('gearModal');
-    const closeModal = document.getElementById('closeModal');
-    const tierSelect = document.getElementById('tier');
-    const runeSelect = document.getElementById('rune');
-    const linesWrapper = document.getElementById('linesWrapper');
-    const specialWrapper = document.getElementById('specialWrapper');
-    const specialSelect = document.getElementById('special');
-    const specialValue = document.getElementById('specialValue');
+    let defs = null;
+    let currentSlot = null;
 
-    // Example stat list (use gearDefs.json in final)
-    const statList = [
-      "ATK%", "Crit Chance", "Crit Damage", "Attack Speed",
-      "HP%", "DEF%", "DR%", "Evasion", "Lifesteal",
-      "Racial Damage", "Boss Damage", "Undead Damage",
-      "Primate Damage", "Animal Damage"
-    ];
-
-    // Populate rune dropdown
-    function fillRunes() {
-      runeSelect.innerHTML = "";
-      statList.forEach(stat => {
-        let opt = document.createElement("option");
-        opt.value = stat;
-        opt.text = stat;
-        runeSelect.appendChild(opt);
-      });
+    // Load JSON
+    async function loadDefs() {
+      const res = await fetch('gearDefs.json');
+      defs = await res.json();
+      initTierSelect();
+      initRuneSelect();
     }
 
-    fillRunes();
+    function initTierSelect() {
+      const tierSel = document.getElementById('tier');
+      tierSel.innerHTML = '';
+      for (const tier of Object.keys(defs.GearStats)) {
+        const o = document.createElement('option');
+        o.value = tier; o.text = tier; tierSel.appendChild(o);
+      }
+    }
 
-    // Open modal on slot click
-    slots.forEach(slot => {
+    function initRuneSelect() {
+      const runeSel = document.getElementById('rune');
+      runeSel.innerHTML = '';
+      for (const stat of Object.keys(defs.RuneStats)) {
+        const o = document.createElement('option');
+        o.value = stat; o.text = stat; runeSel.appendChild(o);
+      }
+    }
+
+    function buildLines(tier, slotName) {
+      const wrapper = document.getElementById('linesWrapper');
+      wrapper.innerHTML = '';
+      const tierDef = defs.GearStats[tier];
+      if (!tierDef) return;
+
+      // line count by tier (Primal=3, others=4 unless your JSON says otherwise)
+      const lines = typeof tierDef.slot === 'number' ? tierDef.slot : (tier === 'Primal' ? 3 : 4);
+
+      // special/option visibility
+      const hasOptions = !!tierDef.options && Object.keys(tierDef.options).length > 0;
+      const specialWrap = document.getElementById('specialWrapper');
+      const specialSel = document.getElementById('special');
+      const specialVal = document.getElementById('specialValue');
+
+      if (hasOptions && tierDef.options[slotName] && tierDef.options[slotName].length) {
+        specialWrap.style.display = 'block';
+        specialSel.innerHTML = '';
+        for (const opt of tierDef.options[slotName]) {
+          // support both string and {name,min,max} forms
+          const name = typeof opt === 'string' ? opt : (opt.name || 'Option');
+          const o = document.createElement('option');
+          o.value = name; o.text = name; specialSel.appendChild(o);
+        }
+      } else {
+        specialWrap.style.display = 'none';
+        specialSel.innerHTML = '';
+        specialVal.value = '';
+      }
+
+      // build line rows
+      const stats = tierDef.stats || {};
+      const statNames = Object.keys(stats);
+      for (let i = 1; i <= lines; i++) {
+        const div = document.createElement('div');
+        const sel = document.createElement('select');
+        const val = document.createElement('input');
+        const label = document.createElement('label');
+
+        label.textContent = `Line ${i}`;
+        sel.id = `line${i}Stat`;
+        val.id = `line${i}Val`;
+        val.type = 'number'; val.step = '0.01';
+
+        // populate stat names
+        sel.innerHTML = '';
+        for (const s of statNames) {
+          const o = document.createElement('option');
+          o.value = s; o.text = s;
+          sel.appendChild(o);
+        }
+
+        // placeholder range on change
+        sel.addEventListener('change', () => {
+          const s = sel.value;
+          const range = stats[s];
+          if (range && typeof range.min === 'number' && typeof range.max === 'number') {
+            val.placeholder = `${range.min} – ${range.max}`;
+          } else {
+            val.placeholder = 'Value';
+          }
+        });
+        // fire once for initial
+        setTimeout(() => sel.dispatchEvent(new Event('change')), 0);
+
+        // layout
+        div.className = 'row';
+        div.appendChild(sel);
+        div.appendChild(val);
+
+        wrapper.appendChild(label);
+        wrapper.appendChild(div);
+      }
+    }
+
+    // open modal on slot click
+    document.querySelectorAll('.slot').forEach(slot => {
       slot.addEventListener('click', () => {
-        modal.style.display = 'flex';
-        linesWrapper.innerHTML = "";
-        let tier = tierSelect.value;
-        let lineCount = (tier === "Primal") ? 3 : 4;
-
-        for (let i = 0; i < lineCount; i++) {
-          let div = document.createElement("div");
-          div.innerHTML = `
-            <label>Line ${i+1}</label>
-            <select>
-              ${statList.map(s => `<option value="${s}">${s}</option>`).join("")}
-            </select>
-            <input type="text" placeholder="Value">
-          `;
-          linesWrapper.appendChild(div);
-        }
-
-        // Handle Option (special purple stat)
-        if (tier === "Chaos" || tier === "Abyss") {
-          specialWrapper.style.display = "block";
-          specialSelect.innerHTML = "";
-          ["Crit Damage +80%", "HP% +52%", "Boss Damage +25%"].forEach(opt => {
-            let o = document.createElement("option");
-            o.value = opt; o.text = opt;
-            specialSelect.appendChild(o);
-          });
-        } else {
-          specialWrapper.style.display = "none";
-        }
+        currentSlot = slot.getAttribute('data-slot');
+        document.getElementById('modalTitle').textContent = `Edit ${currentSlot}`;
+        const tier = document.getElementById('tier').value || 'Primal';
+        buildLines(tier, currentSlot);
+        document.getElementById('gearModal').style.display = 'flex';
       });
     });
 
-    closeModal.addEventListener('click', () => modal.style.display = 'none');
-    document.getElementById('clearAll').addEventListener('click', () => {
-      slots.forEach(s => s.classList.remove('glow'));
+    // tier change inside modal
+    document.getElementById('tier').addEventListener('change', e => {
+      if (!currentSlot) return;
+      buildLines(e.target.value, currentSlot);
     });
+
+    // save / close / clear
+    document.getElementById('saveGear').addEventListener('click', () => {
+      if (!currentSlot) return;
+      const el = document.querySelector(`.slot[data-slot="${currentSlot}"]`);
+      el.classList.add('glow');
+      document.getElementById('gearModal').style.display = 'none';
+    });
+    document.getElementById('closeModal').addEventListener('click', () => {
+      document.getElementById('gearModal').style.display = 'none';
+    });
+    document.getElementById('clearAll').addEventListener('click', () => {
+      document.querySelectorAll('.slot').forEach(s => s.classList.remove('glow'));
+    });
+
+    loadDefs();
   </script>
 </body>
 </html>
