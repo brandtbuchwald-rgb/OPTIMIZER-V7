@@ -13,36 +13,37 @@
   body { margin:0; background:#0c0f14; color:#e8ecf8; font-family:Inter,sans-serif; }
   h1 { text-align:center; margin:20px; font-family:Cinzel,serif; color:#fcd34d; }
 
-  /* Gear Ring */
-  .builder { position:relative; width:320px; height:420px; margin:40px auto; }
-  .slot { position:absolute; width:80px; height:80px;
+  .builder-wrap { display:flex; justify-content:center; margin:20px; }
+  .builder { position:relative; width:320px; height:360px; }
+
+  .hunter {
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:100px; height:100px;
+    background:url('assets/hunter.png') center/contain no-repeat;
+  }
+
+  .slot {
+    position:absolute; width:70px; height:70px;
     border:1px solid rgba(255,255,255,0.15); background:#1a1f2e;
     border-radius:12px; display:flex; align-items:center; justify-content:center;
-    cursor:pointer; font-size:13px; text-align:center; padding:4px;
+    cursor:pointer; font-size:12px; text-align:center; padding:4px;
     transition:background .2s, box-shadow .2s, border-color .3s;
-    overflow:hidden; position:relative;
+    overflow:hidden;
   }
   .slot:hover { background:#232a3d; }
-  .hunter { position:absolute; top:50%; left:50%; transform:translate(-50%, -50%);
-    width:100px; height:100px; background:url('assets/hunter.png') center/contain no-repeat; }
 
-  /* Clear button inside slot */
-  .clearBtn {
-    position:absolute; top:2px; right:4px;
-    font-size:14px; color:#aaa; cursor:pointer;
-    display:none;
-  }
+  .clearBtn { position:absolute; top:2px; right:4px; font-size:14px; color:#aaa; cursor:pointer; display:none; }
   .slot.filled .clearBtn { display:block; }
 
-  /* Ring positions */
-  .Helm { top:0; left:50%; transform:translate(-50%,0); }
-  .Necklace { top:70px; left:0; }
-  .Chest { top:70px; right:0; }
-  .Weapon { top:160px; left:0; }
-  .Gloves { top:160px; right:0; }
-  .Ring { top:250px; left:0; }
-  .Boots { top:250px; right:0; }
-  .Belt { bottom:0; left:50%; transform:translate(-50%,0); }
+  /* Ring positions (percent based) */
+  .Helm { top:5%; left:50%; transform:translateX(-50%); }
+  .Necklace { top:20%; left:10%; }
+  .Chest { top:20%; right:10%; }
+  .Weapon { top:45%; left:0; }
+  .Gloves { top:45%; right:0; }
+  .Ring { bottom:20%; left:10%; }
+  .Boots { bottom:20%; right:10%; }
+  .Belt { bottom:0; left:50%; transform:translateX(-50%); }
 
   /* Modal */
   #modal { position:fixed; inset:0; background:rgba(0,0,0,.75);
@@ -72,8 +73,9 @@
   #modal .card { border-color:var(--accent); box-shadow:0 0 20px var(--accentGlow); }
   .save { background:var(--accent); color:#fff; }
   .close { background:#555; color:#fff; margin-left:8px; }
+  .clearAll { background:#ef4444; color:#fff; margin-top:16px; display:block; margin-left:auto; margin-right:auto; }
 
-  /* Slot glows */
+  /* Slot glow */
   .slot.theme-Primal { border-color:#c6a15b; box-shadow:0 0 12px rgba(198,161,91,.5); }
   .slot.theme-Original { border-color:#ef4444; box-shadow:0 0 12px rgba(239,68,68,.5); }
   .slot.theme-Chaos { border-color:#14b8a6; box-shadow:0 0 12px rgba(20,184,166,.5); }
@@ -91,104 +93,70 @@
 <body>
   <h1>Rediscover • Gear Builder</h1>
 
-  <div class="builder">
-    <div class="hunter"></div>
-    <div class="slot Helm" data-slot="Helm">Helm<span class="clearBtn">×</span></div>
-    <div class="slot Necklace" data-slot="Necklace">Necklace<span class="clearBtn">×</span></div>
-    <div class="slot Chest" data-slot="Chest">Chest<span class="clearBtn">×</span></div>
-    <div class="slot Weapon" data-slot="Weapon">Weapon<span class="clearBtn">×</span></div>
-    <div class="slot Gloves" data-slot="Gloves">Gloves<span class="clearBtn">×</span></div>
-    <div class="slot Ring" data-slot="Ring">Ring<span class="clearBtn">×</span></div>
-    <div class="slot Boots" data-slot="Boots">Boots<span class="clearBtn">×</span></div>
-    <div class="slot Belt" data-slot="Belt">Belt<span class="clearBtn">×</span></div>
+  <div class="builder-wrap">
+    <div class="builder">
+      <div class="hunter"></div>
+      <div class="slot Helm" data-slot="Helm">Helm<span class="clearBtn">×</span></div>
+      <div class="slot Necklace" data-slot="Necklace">Necklace<span class="clearBtn">×</span></div>
+      <div class="slot Chest" data-slot="Chest">Chest<span class="clearBtn">×</span></div>
+      <div class="slot Weapon" data-slot="Weapon">Weapon<span class="clearBtn">×</span></div>
+      <div class="slot Gloves" data-slot="Gloves">Gloves<span class="clearBtn">×</span></div>
+      <div class="slot Ring" data-slot="Ring">Ring<span class="clearBtn">×</span></div>
+      <div class="slot Boots" data-slot="Boots">Boots<span class="clearBtn">×</span></div>
+      <div class="slot Belt" data-slot="Belt">Belt<span class="clearBtn">×</span></div>
+    </div>
   </div>
+
+  <button class="clearAll" id="clearAllBtn">Clear All</button>
 
   <div id="modal">
     <div class="card theme-Primal" id="modalCard">
       <h2 id="modalTitle"></h2>
-
-      <div class="section">
-        <label>Tier</label>
-        <select id="tierSelect"></select>
-      </div>
-
+      <div class="section"><label>Tier</label><select id="tierSelect"></select></div>
       <div class="section">
         <label>Rune</label>
-        <div class="field-row">
-          <select id="runeSelect"></select>
-          <input id="runeValue" type="number" placeholder="Value">
-        </div>
+        <div class="field-row"><select id="runeSelect"></select><input id="runeValue" type="number" placeholder="Value"></div>
       </div>
-
-      <div class="section">
-        <label>Special</label>
-        <input id="specialInput" type="text">
-      </div>
-
+      <div class="section"><label>Special</label><input id="specialInput" type="text"></div>
       <div id="lines"></div>
-
-      <div class="btn-row">
-        <button class="save" id="saveBtn">Save</button>
-        <button class="close" id="closeBtn">Close</button>
-      </div>
+      <div class="btn-row"><button class="save" id="saveBtn">Save</button><button class="close" id="closeBtn">Close</button></div>
     </div>
   </div>
 
 <script>
 let gearDefs={}, chosenGear={}, statOptions=[];
-
 async function loadDefs(){
   const res=await fetch("gearDefs.json");
   gearDefs=await res.json();
-
-  // Tiers
   const tierSelect=document.getElementById("tierSelect");
   for(const tier of Object.keys(gearDefs.GearStats||{})){
-    const opt=document.createElement("option");
-    opt.value=tier; opt.text=tier; tierSelect.appendChild(opt);
+    const opt=document.createElement("option"); opt.value=tier; opt.text=tier; tierSelect.appendChild(opt);
   }
-
-  // Rune list
   const runes=["None","ATK SPD","Crit Chance","Evasion","DR"];
   const runeSelect=document.getElementById("runeSelect");
   runes.forEach(r=>{ const o=document.createElement("option");o.value=r;o.text=r;runeSelect.appendChild(o); });
-
-  // Stat keys
   const statSet=new Set();
-  for(const tier in gearDefs.GearStats){ const obj=gearDefs.GearStats[tier];
-    for(const s in obj.stats){ if(s) statSet.add(s); }
-  }
+  for(const tier in gearDefs.GearStats){ for(const s in gearDefs.GearStats[tier].stats){ statSet.add(s); } }
   statOptions=[...statSet];
 }
 loadDefs();
 
-const modal=document.getElementById("modal");
-const modalTitle=document.getElementById("modalTitle");
-const modalCard=document.getElementById("modalCard");
+const modal=document.getElementById("modal"), modalTitle=document.getElementById("modalTitle"), modalCard=document.getElementById("modalCard");
 let currentSlot=null;
 
-// Slot click opens modal
 document.querySelectorAll(".slot").forEach(slot=>{
   slot.addEventListener("click",(e)=>{
-    if(e.target.classList.contains("clearBtn")) return; // skip if clicking clear
-    currentSlot=slot.dataset.slot;
-    modalTitle.textContent="Edit "+currentSlot;
-    buildLines();
-    modal.style.display="flex";
+    if(e.target.classList.contains("clearBtn")) return;
+    currentSlot=slot.dataset.slot; modalTitle.textContent="Edit "+currentSlot; buildLines(); modal.style.display="flex";
   });
 });
 
-// Build 4 lines
 function buildLines(){
-  const linesDiv=document.getElementById("lines");
-  linesDiv.innerHTML="";
+  const linesDiv=document.getElementById("lines"); linesDiv.innerHTML="";
   for(let i=1;i<=4;i++){
-    const row=document.createElement("div");
-    row.className="section";
-    const label=document.createElement("label");
-    label.textContent="Line "+i;
-    const field=document.createElement("div");
-    field.className="field-row";
+    const row=document.createElement("div"); row.className="section";
+    const label=document.createElement("label"); label.textContent="Line "+i;
+    const field=document.createElement("div"); field.className="field-row";
     const sel=document.createElement("select"); sel.id=`line${i}Stat`;
     statOptions.forEach(s=>{ const o=document.createElement("option");o.value=s;o.text=s;sel.appendChild(o); });
     const val=document.createElement("input"); val.type="number"; val.placeholder="Value"; val.id=`line${i}Val`;
@@ -198,66 +166,44 @@ function buildLines(){
   }
 }
 
-// Accent theme switching
-document.getElementById("tierSelect").addEventListener("change",(e)=>{
-  const tier=e.target.value;
-  modalCard.className="card theme-"+tier;
-});
+document.getElementById("tierSelect").addEventListener("change",(e)=>{ modalCard.className="card theme-"+e.target.value; });
 
-// Save gear
 document.getElementById("saveBtn").addEventListener("click",()=>{
   if(!currentSlot) return;
-  const slotData={
-    tier: document.getElementById("tierSelect").value,
-    rune: document.getElementById("runeSelect").value,
-    runeValue: document.getElementById("runeValue").value,
-    special: document.getElementById("specialInput").value,
-    lines:[]
-  };
-  for(let i=1;i<=4;i++){
-    slotData.lines.push({
-      stat: document.getElementById(`line${i}Stat`).value,
-      value: document.getElementById(`line${i}Val`).value
-    });
-  }
+  const slotData={ tier:document.getElementById("tierSelect").value, rune:document.getElementById("runeSelect").value, runeValue:document.getElementById("runeValue").value, special:document.getElementById("specialInput").value, lines:[] };
+  for(let i=1;i<=4;i++){ slotData.lines.push({ stat:document.getElementById(`line${i}Stat`).value, value:document.getElementById(`line${i}Val`).value }); }
   chosenGear[currentSlot]=slotData;
-
-  // Update slot box
   const slotEl=document.querySelector(`.slot[data-slot='${currentSlot}']`);
   slotEl.innerHTML=slotData.tier+" "+currentSlot+"<span class='clearBtn'>×</span>";
   slotEl.className="slot "+currentSlot+" theme-"+slotData.tier+" filled";
-
-  // Hunter pulse for weapon
-  if(currentSlot==="Weapon"){
-    const hunter=document.querySelector(".hunter");
-    hunter.className="hunter pulse theme-"+slotData.tier;
-  }
-
-  modal.style.display="none";
-  attachClearHandlers();
+  if(currentSlot==="Weapon"){ document.querySelector(".hunter").className="hunter pulse theme-"+slotData.tier; }
+  modal.style.display="none"; attachClearHandlers();
 });
 
-// Close modal
 document.getElementById("closeBtn").addEventListener("click",()=>modal.style.display="none");
 
-// Clear buttons
 function attachClearHandlers(){
   document.querySelectorAll(".clearBtn").forEach(btn=>{
     btn.onclick=(e)=>{
       e.stopPropagation();
-      const slotEl=btn.parentElement;
-      const slot=slotEl.dataset.slot;
-      delete chosenGear[slot];
-      slotEl.textContent=slot+"<span class='clearBtn'>×</span>";
-      slotEl.className="slot "+slot;
+      const slotEl=btn.parentElement; const slot=slotEl.dataset.slot;
+      delete chosenGear[slot]; slotEl.textContent=slot+"<span class='clearBtn'>×</span>"; slotEl.className="slot "+slot;
       attachClearHandlers();
-      if(slot==="Weapon"){
-        document.querySelector(".hunter").className="hunter";
-      }
+      if(slot==="Weapon"){ document.querySelector(".hunter").className="hunter"; }
     }
   });
 }
 attachClearHandlers();
+
+document.getElementById("clearAllBtn").addEventListener("click",()=>{
+  chosenGear={};
+  document.querySelectorAll(".slot").forEach(slotEl=>{
+    const slot=slotEl.dataset.slot;
+    slotEl.textContent=slot+"<span class='clearBtn'>×</span>"; slotEl.className="slot "+slot;
+  });
+  document.querySelector(".hunter").className="hunter";
+  attachClearHandlers();
+});
 </script>
 </body>
 </html>
