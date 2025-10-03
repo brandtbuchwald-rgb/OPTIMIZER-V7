@@ -1,4 +1,5 @@
-{
+
+    {
   "stats": {
     "Crit Damage": {
       "Primal": { "min": 25, "max": 35 },
@@ -20,7 +21,25 @@
       "Chaos": { "min": 14, "max": 16 },
       "Abyss": { "min": 16, "max": 18 },
       "Rune": { "min": 6, "max": 6 }
-    },
+    }
+  },
+  "special": {
+    "Weapon": ["Crit Damage +80%", "Transform to Demon Lord"],
+    "Necklace": ["Crit Damage +60%"],
+    "Ring": ["Crit Damage +60%"],
+    "Helm": ["Boss Damage +25%", "HP% +52%"],
+    "Chest": ["HP% +52%"],
+    "Belt": ["DR% +40%"],
+    "Gloves": ["Attack% +52%"],
+    "Boots": ["Evasion +20%"]
+  },
+  "tiers": {
+    "Primal": { "lines": 3, "special": false },
+    "Original": { "lines": 4, "special": false },
+    "Chaos": { "lines": 4, "special": true },
+    "Abyss": { "lines": 4, "special": true }
+  }
+}
     "ATK SPD": {},
     "ATK%": {},
     "HP%": {},
@@ -39,10 +58,3 @@
     "PvP Damage": {},
     "PvP Damage Reduction": {}
   },
-  "tiers": {
-    "Primal": { "lines": 3, "special": false },
-    "Original": { "lines": 4, "special": false },
-    "Chaos": { "lines": 4, "special": true },
-    "Abyss": { "lines": 4, "special": true }
-  }
-}
