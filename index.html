@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -23,31 +23,31 @@
     .gear-circle {
       position: relative;
       width: 100%;
-      max-width: 420px;
+      max-width: 440px;
       margin: 0 auto;
       aspect-ratio: 1;
     }
 
-    /* Golden guide ring */
+    /* Bigger golden guide ring */
     .gear-circle::before {
       content: "";
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 85%;
-      height: 85%;
-      border: 2px solid rgba(255, 215, 0, 0.25);
+      width: 95%;
+      height: 95%;
+      border: 2px solid rgba(255, 215, 0, 0.35);
       border-radius: 50%;
       transform: translate(-50%, -50%);
-      box-shadow: 0 0 25px rgba(255, 215, 0, 0.3);
+      box-shadow: 0 0 35px rgba(255, 215, 0, 0.5);
       pointer-events: none;
       z-index: 0;
     }
 
     .slot {
       position: absolute;
-      width: 80px;
-      height: 80px;
+      width: 90px;
+      height: 90px;
       background: #1a1a1a;
       border: 2px solid #333;
       border-radius: 10px;
@@ -55,7 +55,7 @@
       align-items: center;
       justify-content: center;
       color: white;
-      font-size: 14px;
+      font-size: 15px;
       cursor: pointer;
       transition: all 0.2s ease-in-out;
       z-index: 1;
@@ -108,8 +108,15 @@
     }
     .close {
       float: right;
+      font-size: 28px;
+      font-weight: bold;
       cursor: pointer;
-      color: red;
+      color: #ff4d4d;
+      text-shadow: 0 0 8px rgba(255,0,0,0.7);
+    }
+    .close:hover {
+      color: #ff1a1a;
+      text-shadow: 0 0 12px rgba(255,0,0,1);
     }
     select, input {
       width: 100%;
@@ -131,12 +138,12 @@
 
     /* Responsive scaling */
     @media (max-width: 500px) {
-      .slot { width: 65px; height: 65px; font-size: 12px; }
-      .gear-circle::before { width: 78%; height: 78%; }
+      .slot { width: 70px; height: 70px; font-size: 13px; }
+      .gear-circle::before { width: 88%; height: 88%; }
     }
     @media (max-width: 380px) {
-      .slot { width: 55px; height: 55px; font-size: 11px; }
-      .gear-circle::before { width: 72%; height: 72%; }
+      .slot { width: 60px; height: 60px; font-size: 11px; }
+      .gear-circle::before { width: 80%; height: 80%; }
     }
   </style>
 </head>
