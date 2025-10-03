@@ -1,215 +1,232 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Rediscover • Gear Builder</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
+  <title>Rediscover • Gear Builder</title>
+  <style>
+    body {
+      background: #0d0d0d;
+      color: white;
+      font-family: 'Cinzel', serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    h1 {
+      font-size: 2.2em;
+      margin: 20px 0;
+      color: gold;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+    }
 
-<style>
-  body { margin:0; background:#0c0f14; color:#e8ecf8; font-family:Inter,sans-serif; }
-  h1 { text-align:center; margin:20px; font-family:Cinzel,serif; color:#fcd34d; }
+    .gear-circle {
+      position: relative;
+      width: 100%;
+      max-width: 420px;
+      margin: 0 auto;
+      aspect-ratio: 1;
+    }
 
-  .builder-wrap { display:flex; justify-content:center; margin:20px; }
-  .builder { position:relative; width:90vw; max-width:380px; height:90vw; max-height:380px; }
+    /* Golden guide ring */
+    .gear-circle::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 85%;
+      height: 85%;
+      border: 2px solid rgba(255, 215, 0, 0.25);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 25px rgba(255, 215, 0, 0.3);
+      pointer-events: none;
+      z-index: 0;
+    }
 
-  .hunter {
-    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-    width:25vw; height:25vw; max-width:100px; max-height:100px;
-    background:url('assets/hunter.png') center/contain no-repeat;
-  }
+    .slot {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      background: #1a1a1a;
+      border: 2px solid #333;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+      z-index: 1;
+    }
 
-  .slot {
-    position:absolute;
-    width:20vw; height:20vw; max-width:70px; max-height:70px;
-    border:1px solid rgba(255,255,255,0.15); background:#1a1f2e;
-    border-radius:12px; display:flex; align-items:center; justify-content:center;
-    cursor:pointer; font-size:12px; text-align:center; padding:4px;
-    transition:background .2s, box-shadow .2s, border-color .3s;
-    overflow:hidden;
-  }
-  .slot:hover { background:#232a3d; }
+    /* Clock-style snapping */
+    .Helm    { top: 5%;  left: 50%; transform: translateX(-50%); }
+    .Necklace{ top: 20%; left: 15%; }
+    .Weapon  { top: 50%; left: 5%;  transform: translateY(-50%); }
+    .Ring    { bottom: 20%; left: 15%; }
+    .Belt    { bottom: 5%; left: 50%; transform: translateX(-50%); }
+    .Boots   { bottom: 20%; right: 15%; }
+    .Gloves  { top: 50%; right: 5%;  transform: translateY(-50%); }
+    .Chest   { top: 20%; right: 15%; }
 
-  .clearBtn { position:absolute; top:2px; right:4px; font-size:14px; color:#aaa; cursor:pointer; display:none; }
-  .slot.filled .clearBtn { display:block; }
+    .clear-all {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: #e74c3c;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .clear-all:hover { background: #c0392b; }
 
-  /* Spread out ring positions */
-  .Helm { top:-2%; left:50%; transform:translateX(-50%); }
-  .Necklace { top:15%; left:-5%; }
-  .Chest { top:15%; right:-5%; }
-  .Weapon { top:50%; left:-10%; transform:translateY(-50%); }
-  .Gloves { top:50%; right:-10%; transform:translateY(-50%); }
-  .Ring { bottom:15%; left:-5%; }
-  .Boots { bottom:15%; right:-5%; }
-  .Belt { bottom:-2%; left:50%; transform:translateX(-50%); }
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 100;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7);
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: #1a1a1a;
+      padding: 20px;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 400px;
+      text-align: left;
+    }
+    .modal-content h2 {
+      margin-top: 0;
+      color: gold;
+    }
+    .close {
+      float: right;
+      cursor: pointer;
+      color: red;
+    }
+    select, input {
+      width: 100%;
+      margin: 5px 0 15px;
+      padding: 6px;
+      border-radius: 5px;
+      border: 1px solid #555;
+      background: #111;
+      color: white;
+    }
+    button.save {
+      padding: 10px 15px;
+      background: #27ae60;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      cursor: pointer;
+    }
 
-  @media (max-width: 400px) {
-    .slot { width:18vw; height:18vw; font-size:11px; }
-    .hunter { width:22vw; height:22vw; }
-  }
-
-  /* Modal */
-  #modal { position:fixed; inset:0; background:rgba(0,0,0,.75);
-    display:none; align-items:center; justify-content:center; z-index:100; }
-  #modal .card { background:rgba(19,24,37,.95); border:1px solid rgba(255,255,255,.1);
-    border-radius:16px; padding:20px; width:95%; max-width:520px;
-    box-shadow:0 20px 40px rgba(0,0,0,.5);
-    transition: box-shadow .3s, border-color .3s;
-  }
-  #modal h2 { margin-top:0; font-family:Cinzel,serif; }
-  .section { display:grid; grid-template-columns:120px 1fr; gap:12px; margin-bottom:12px; }
-  .section label { font-weight:600; font-size:14px; color:#a8b0c2; text-align:right; }
-  .field-row { display:flex; gap:8px; }
-  select,input { width:100%; padding:8px; border-radius:8px; border:1px solid #444;
-    background:#121826; color:#e8ecf8; font-weight:600; }
-  .btn-row { text-align:right; margin-top:20px; }
-  button { padding:10px 16px; border:0; border-radius:8px; font-weight:bold; cursor:pointer; }
-
-  /* Accent themes */
-  :root { --accent:#c6a15b; --accentGlow:rgba(198,161,91,.4); }
-  .theme-Primal { --accent:#c6a15b; --accentGlow:rgba(198,161,91,.4); }
-  .theme-Original { --accent:#ef4444; --accentGlow:rgba(239,68,68,.4); }
-  .theme-Chaos { --accent:#14b8a6; --accentGlow:rgba(20,184,166,.4); }
-  .theme-Abyss { --accent:#7c3aed; --accentGlow:rgba(124,58,237,.4); }
-
-  #modal .card h2 { color:var(--accent); }
-  #modal .card { border-color:var(--accent); box-shadow:0 0 20px var(--accentGlow); }
-  .save { background:var(--accent); color:#fff; }
-  .close { background:#555; color:#fff; margin-left:8px; }
-  .clearAll { background:#ef4444; color:#fff; margin-top:16px; display:block; margin-left:auto; margin-right:auto; }
-
-  /* Slot glow */
-  .slot.theme-Primal { border-color:#c6a15b; box-shadow:0 0 12px rgba(198,161,91,.5); }
-  .slot.theme-Original { border-color:#ef4444; box-shadow:0 0 12px rgba(239,68,68,.5); }
-  .slot.theme-Chaos { border-color:#14b8a6; box-shadow:0 0 12px rgba(20,184,166,.5); }
-  .slot.theme-Abyss { border-color:#7c3aed; box-shadow:0 0 12px rgba(124,58,237,.5); }
-
-  /* Hunter pulse */
-  .hunter.pulse { border-radius:50%; animation:pulseGlow 2s infinite; }
-  @keyframes pulseGlow {
-    0% { box-shadow:0 0 15px var(--accentGlow); }
-    50% { box-shadow:0 0 35px var(--accentGlow), 0 0 70px var(--accentGlow); }
-    100% { box-shadow:0 0 15px var(--accentGlow); }
-  }
-</style>
+    /* Responsive scaling */
+    @media (max-width: 500px) {
+      .slot { width: 65px; height: 65px; font-size: 12px; }
+      .gear-circle::before { width: 78%; height: 78%; }
+    }
+    @media (max-width: 380px) {
+      .slot { width: 55px; height: 55px; font-size: 11px; }
+      .gear-circle::before { width: 72%; height: 72%; }
+    }
+  </style>
 </head>
 <body>
   <h1>Rediscover • Gear Builder</h1>
 
-  <div class="builder-wrap">
-    <div class="builder">
-      <div class="hunter"></div>
-      <div class="slot Helm" data-slot="Helm">Helm<span class="clearBtn">×</span></div>
-      <div class="slot Necklace" data-slot="Necklace">Necklace<span class="clearBtn">×</span></div>
-      <div class="slot Chest" data-slot="Chest">Chest<span class="clearBtn">×</span></div>
-      <div class="slot Weapon" data-slot="Weapon">Weapon<span class="clearBtn">×</span></div>
-      <div class="slot Gloves" data-slot="Gloves">Gloves<span class="clearBtn">×</span></div>
-      <div class="slot Ring" data-slot="Ring">Ring<span class="clearBtn">×</span></div>
-      <div class="slot Boots" data-slot="Boots">Boots<span class="clearBtn">×</span></div>
-      <div class="slot Belt" data-slot="Belt">Belt<span class="clearBtn">×</span></div>
+  <div class="gear-circle">
+    <div class="slot Helm">Helm</div>
+    <div class="slot Necklace">Necklace</div>
+    <div class="slot Weapon">Weapon</div>
+    <div class="slot Ring">Ring</div>
+    <div class="slot Belt">Belt</div>
+    <div class="slot Boots">Boots</div>
+    <div class="slot Gloves">Gloves</div>
+    <div class="slot Chest">Chest</div>
+  </div>
+
+  <button class="clear-all" onclick="clearAll()">Clear All</button>
+
+  <!-- Modal -->
+  <div id="gearModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h2>Edit Gear</h2>
+
+      <label>Tier</label>
+      <select id="tierSelect">
+        <option>Primal</option>
+        <option>Original</option>
+        <option>Chaos</option>
+        <option>Abyss</option>
+      </select>
+
+      <label>Rune</label>
+      <select id="runeSelect">
+        <option>ATK SPD</option>
+        <option>Crit Chance</option>
+        <option>Evasion</option>
+        <option>DR</option>
+        <option>Crit Damage</option>
+      </select>
+      <input type="text" id="runeValue" placeholder="Rune Value">
+
+      <label>Special / Option</label>
+      <input type="text" id="specialInput" placeholder="Special ability">
+
+      <label>Line 1</label>
+      <input type="text" id="line1" placeholder="Stat / Value">
+      <label>Line 2</label>
+      <input type="text" id="line2" placeholder="Stat / Value">
+      <label>Line 3</label>
+      <input type="text" id="line3" placeholder="Stat / Value">
+      <label>Line 4</label>
+      <input type="text" id="line4" placeholder="Stat / Value">
+
+      <button class="save" onclick="saveGear()">Save</button>
     </div>
   </div>
 
-  <button class="clearAll" id="clearAllBtn">Clear All</button>
+  <script>
+    let currentSlot = null;
 
-  <div id="modal">
-    <div class="card theme-Primal" id="modalCard">
-      <h2 id="modalTitle"></h2>
-      <div class="section"><label>Tier</label><select id="tierSelect"></select></div>
-      <div class="section">
-        <label>Rune</label>
-        <div class="field-row"><select id="runeSelect"></select><input id="runeValue" type="number" placeholder="Value"></div>
-      </div>
-      <div class="section"><label>Special</label><input id="specialInput" type="text"></div>
-      <div id="lines"></div>
-      <div class="btn-row"><button class="save" id="saveBtn">Save</button><button class="close" id="closeBtn">Close</button></div>
-    </div>
-  </div>
+    // Open modal when slot clicked
+    document.querySelectorAll('.slot').forEach(slot => {
+      slot.addEventListener('click', () => {
+        currentSlot = slot;
+        document.getElementById('gearModal').style.display = 'flex';
+      });
+    });
 
-<script>
-let gearDefs={}, chosenGear={}, statOptions=[];
-async function loadDefs(){
-  const res=await fetch("gearDefs.json");
-  gearDefs=await res.json();
-  const tierSelect=document.getElementById("tierSelect");
-  for(const tier of Object.keys(gearDefs.GearStats||{})){
-    const opt=document.createElement("option"); opt.value=tier; opt.text=tier; tierSelect.appendChild(opt);
-  }
-  const runes=["None","ATK SPD","Crit Chance","Evasion","DR"];
-  const runeSelect=document.getElementById("runeSelect");
-  runes.forEach(r=>{ const o=document.createElement("option");o.value=r;o.text=r;runeSelect.appendChild(o); });
-  const statSet=new Set();
-  for(const tier in gearDefs.GearStats){ for(const s in gearDefs.GearStats[tier].stats){ statSet.add(s); } }
-  statOptions=[...statSet];
-}
-loadDefs();
-
-const modal=document.getElementById("modal"), modalTitle=document.getElementById("modalTitle"), modalCard=document.getElementById("modalCard");
-let currentSlot=null;
-
-document.querySelectorAll(".slot").forEach(slot=>{
-  slot.addEventListener("click",(e)=>{
-    if(e.target.classList.contains("clearBtn")) return;
-    currentSlot=slot.dataset.slot; modalTitle.textContent="Edit "+currentSlot; buildLines(); modal.style.display="flex";
-  });
-});
-
-function buildLines(){
-  const linesDiv=document.getElementById("lines"); linesDiv.innerHTML="";
-  for(let i=1;i<=4;i++){
-    const row=document.createElement("div"); row.className="section";
-    const label=document.createElement("label"); label.textContent="Line "+i;
-    const field=document.createElement("div"); field.className="field-row";
-    const sel=document.createElement("select"); sel.id=`line${i}Stat`;
-    statOptions.forEach(s=>{ const o=document.createElement("option");o.value=s;o.text=s;sel.appendChild(o); });
-    const val=document.createElement("input"); val.type="number"; val.placeholder="Value"; val.id=`line${i}Val`;
-    field.appendChild(sel); field.appendChild(val);
-    row.appendChild(label); row.appendChild(field);
-    linesDiv.appendChild(row);
-  }
-}
-
-document.getElementById("tierSelect").addEventListener("change",(e)=>{ modalCard.className="card theme-"+e.target.value; });
-
-document.getElementById("saveBtn").addEventListener("click",()=>{
-  if(!currentSlot) return;
-  const slotData={ tier:document.getElementById("tierSelect").value, rune:document.getElementById("runeSelect").value, runeValue:document.getElementById("runeValue").value, special:document.getElementById("specialInput").value, lines:[] };
-  for(let i=1;i<=4;i++){ slotData.lines.push({ stat:document.getElementById(`line${i}Stat`).value, value:document.getElementById(`line${i}Val`).value }); }
-  chosenGear[currentSlot]=slotData;
-  const slotEl=document.querySelector(`.slot[data-slot='${currentSlot}']`);
-  slotEl.innerHTML=slotData.tier+" "+currentSlot+"<span class='clearBtn'>×</span>";
-  slotEl.className="slot "+currentSlot+" theme-"+slotData.tier+" filled";
-  if(currentSlot==="Weapon"){ document.querySelector(".hunter").className="hunter pulse theme-"+slotData.tier; }
-  modal.style.display="none"; attachClearHandlers();
-});
-
-document.getElementById("closeBtn").addEventListener("click",()=>modal.style.display="none");
-
-function attachClearHandlers(){
-  document.querySelectorAll(".clearBtn").forEach(btn=>{
-    btn.onclick=(e)=>{
-      e.stopPropagation();
-      const slotEl=btn.parentElement; const slot=slotEl.dataset.slot;
-      delete chosenGear[slot]; slotEl.textContent=slot+"<span class='clearBtn'>×</span>"; slotEl.className="slot "+slot;
-      attachClearHandlers();
-      if(slot==="Weapon"){ document.querySelector(".hunter").className="hunter"; }
+    function closeModal() {
+      document.getElementById('gearModal').style.display = 'none';
     }
-  });
-}
-attachClearHandlers();
 
-document.getElementById("clearAllBtn").addEventListener("click",()=>{
-  chosenGear={};
-  document.querySelectorAll(".slot").forEach(slotEl=>{
-    const slot=slotEl.dataset.slot;
-    slotEl.textContent=slot+"<span class='clearBtn'>×</span>"; slotEl.className="slot "+slot;
-  });
-  document.querySelector(".hunter").className="hunter";
-  attachClearHandlers();
-});
-</script>
+    function saveGear() {
+      if (currentSlot) {
+        let tier = document.getElementById('tierSelect').value;
+        let rune = document.getElementById('runeSelect').value;
+        let special = document.getElementById('specialInput').value;
+        currentSlot.innerText = tier;
+        if (special) currentSlot.innerText += "\\n" + special;
+      }
+      closeModal();
+    }
+
+    function clearAll() {
+      document.querySelectorAll('.slot').forEach(slot => {
+        slot.innerText = slot.classList[1]; // reset to original label
+      });
+    }
+  </script>
 </body>
 </html>
