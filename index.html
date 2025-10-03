@@ -112,21 +112,43 @@
   loadDefs();
 
   function buildLines(tier){
-    const linesDiv=document.getElementById("lines");
-    linesDiv.innerHTML="";
-    let rule=gearDefs.tiers[tier];
-    document.getElementById("specialWrapper").style.display=rule.special?"block":"none";
+  const linesDiv=document.getElementById("lines");
+  linesDiv.innerHTML="";
+  let rule=gearDefs.tiers[tier];
+  document.getElementById("specialWrapper").style.display=rule.special?"block":"none";
 
-    for(let i=1;i<=rule.lines;i++){
-      const row=document.createElement("div"); row.className="section";
-      const label=document.createElement("label"); label.textContent="Line "+i;
-      const field=document.createElement("div"); field.className="field-row";
-      const sel=document.createElement("select"); sel.id=`line${i}Stat`;
-      gearDefs.stats.forEach(s=>{let o=document.createElement("option"); o.value=s;o.text=s;sel.appendChild(o);});
-      const val=document.createElement("input"); val.type="number"; val.step="0.01"; val.placeholder="Value"; val.id=`line${i}Val`;
-      field.appendChild(sel);field.appendChild(val); row.appendChild(label);row.appendChild(field); linesDiv.appendChild(row);
-    }
+  for(let i=1;i<=rule.lines;i++){
+    const row=document.createElement("div"); row.className="section";
+    const label=document.createElement("label"); label.textContent="Line "+i;
+    const field=document.createElement("div"); field.className="field-row";
+    const sel=document.createElement("select"); sel.id=`line${i}Stat`;
+    
+    Object.keys(gearDefs.stats).forEach(s=>{
+      let o=document.createElement("option"); o.value=s;o.text=s;sel.appendChild(o);
+    });
+
+    const val=document.createElement("input");
+    val.type="number"; val.step="0.01"; val.id=`line${i}Val`;
+
+    // update placeholder when stat changes
+    sel.addEventListener("change",()=>{
+      const stat=sel.value;
+      const ranges=gearDefs.stats[stat] && gearDefs.stats[stat][tier];
+      if(ranges && ranges.min!==undefined && ranges.max!==undefined){
+        val.placeholder=`${ranges.min} – ${ranges.max}`;
+      }else{
+        val.placeholder="Value";
+      }
+    });
+
+    // trigger default placeholder
+    sel.dispatchEvent(new Event("change"));
+
+    field.appendChild(sel); field.appendChild(val);
+    row.appendChild(label); row.appendChild(field);
+    linesDiv.appendChild(row);
   }
+}
 
   // Slot click
   document.querySelectorAll('.slot').forEach(slot=>{
