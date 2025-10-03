@@ -4,160 +4,51 @@
   <meta charset="UTF-8">
   <title>Rediscover • Gear Builder</title>
   <style>
-    body {
-      background: #0d0d0d;
-      color: white;
-      font-family: 'Cinzel', serif;
-      text-align: center;
-      margin: 0;
-      padding: 0;
-    }
+    body { background:#0d0d0d; color:white; font-family:'Cinzel',serif; text-align:center; margin:0; padding:0; }
+    h1 { font-size:2.2em; margin:20px 0; color:gold; text-shadow:0 0 10px rgba(255,215,0,0.6); }
 
-    h1 {
-      font-size: 2.2em;
-      margin: 20px 0;
-      color: gold;
-      text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
-    }
-
-    .gear-circle {
-      position: relative;
-      width: 100%;
-      max-width: 460px;
-      margin: 0 auto;
-      aspect-ratio: 1;
-    }
-
-    /* Golden guide ring */
+    .gear-circle { position:relative; width:100%; max-width:460px; margin:0 auto; aspect-ratio:1; }
     .gear-circle::before {
-      content: "";
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 95%;
-      height: 95%;
-      border: 2px solid rgba(255, 215, 0, 0.35);
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-      box-shadow: 0 0 35px rgba(255, 215, 0, 0.5);
-      pointer-events: none;
-      z-index: 0;
+      content:""; position:absolute; top:50%; left:50%; width:95%; height:95%;
+      border:2px solid rgba(255,215,0,0.35); border-radius:50%;
+      transform:translate(-50%,-50%); box-shadow:0 0 35px rgba(255,215,0,0.5);
+      pointer-events:none; z-index:0;
     }
 
     .slot {
-      position: absolute;
-      width: 90px;
-      height: 90px;
-      background: #1a1a1a;
-      border: 2px solid #333;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 15px;
-      cursor: pointer;
-      transition: all 0.2s ease-in-out;
-      z-index: 1;
-      transform: translate(-50%, -50%);
+      position:absolute; width:90px; height:90px; background:#1a1a1a; border:2px solid #333;
+      border-radius:10px; display:flex; align-items:center; justify-content:center;
+      color:white; font-size:15px; cursor:pointer; transition:all 0.25s ease-in-out;
+      z-index:1; transform:translate(-50%,-50%);
     }
+    .slot.filled { box-shadow:0 0 20px gold, inset 0 0 10px rgba(255,215,0,0.5); border-color:gold; }
 
-    /* Position slots like a clock using CSS variables */
-    .Helm    { --angle: 270deg; }
-    .Chest   { --angle: 315deg; }
-    .Gloves  { --angle:   0deg; }
-    .Boots   { --angle:  45deg; }
-    .Belt    { --angle:  90deg; }
-    .Ring    { --angle: 135deg; }
-    .Weapon  { --angle: 180deg; }
-    .Necklace{ --angle: 225deg; }
+    .Helm{--angle:270deg;} .Chest{--angle:315deg;} .Gloves{--angle:0deg;}
+    .Boots{--angle:45deg;} .Belt{--angle:90deg;} .Ring{--angle:135deg;}
+    .Weapon{--angle:180deg;} .Necklace{--angle:225deg;}
+    .slot { top:calc(50% + 40% * sin(var(--angle))); left:calc(50% + 40% * cos(var(--angle))); }
 
-    .slot {
-      top: calc(50% + 40% * sin(var(--angle)));
-      left: calc(50% + 40% * cos(var(--angle)));
-    }
+    .clear-all { margin-top:20px; padding:10px 20px; background:#e74c3c; border:none; border-radius:6px;
+      color:white; font-size:16px; cursor:pointer; }
+    .clear-all:hover{background:#c0392b;}
 
-    .clear-all {
-      margin-top: 20px;
-      padding: 10px 20px;
-      background: #e74c3c;
-      border: none;
-      border-radius: 6px;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    .clear-all:hover { background: #c0392b; }
-
-    /* Modal */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 100;
-      left: 0; top: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.7);
-      justify-content: center;
-      align-items: center;
-    }
+    .modal { display:none; position:fixed; z-index:100; left:0; top:0; width:100%; height:100%;
+      background:rgba(0,0,0,0.7); justify-content:center; align-items:center; }
     .modal-content {
-      background: #1a1a1a;
-      padding: 20px;
-      border-radius: 8px;
-      width: 90%;
-      max-width: 420px;
-      text-align: left;
+      background:#1a1a1a; padding:20px; border-radius:8px; width:90%; max-width:420px; text-align:left;
     }
-    .modal-content h2 {
-      margin-top: 0;
-      color: gold;
-    }
-    .close {
-      float: right;
-      font-size: 28px;
-      font-weight: bold;
-      cursor: pointer;
-      color: #ff4d4d;
-      text-shadow: 0 0 8px rgba(255,0,0,0.7);
-    }
-    .close:hover {
-      color: #ff1a1a;
-      text-shadow: 0 0 12px rgba(255,0,0,1);
-    }
-    select, input {
-      width: 100%;
-      margin: 5px 0 10px;
-      padding: 6px;
-      border-radius: 5px;
-      border: 1px solid #555;
-      background: #111;
-      color: white;
-    }
-    button.save {
-      padding: 10px 15px;
-      background: #27ae60;
-      border: none;
-      border-radius: 6px;
-      color: white;
-      cursor: pointer;
-    }
+    .modal-content h2 { margin-top:0; color:gold; }
+    .close { float:right; font-size:28px; font-weight:bold; cursor:pointer; color:#ff4d4d;
+      text-shadow:0 0 8px rgba(255,0,0,0.7); }
+    .close:hover { color:#ff1a1a; text-shadow:0 0 12px rgba(255,0,0,1); }
 
-    .field-row {
-      display: flex;
-      gap: 6px;
-    }
-    .field-row select { flex: 2; }
-    .field-row input { flex: 1; }
+    select,input { width:100%; margin:5px 0 10px; padding:6px; border-radius:5px; border:1px solid #555; background:#111; color:white; }
+    button.save { padding:10px 15px; background:#27ae60; border:none; border-radius:6px; color:white; cursor:pointer; }
 
-    /* Responsive scaling */
-    @media (max-width: 500px) {
-      .slot { width: 70px; height: 70px; font-size: 13px; }
-      .gear-circle::before { width: 88%; height: 88%; }
-    }
-    @media (max-width: 380px) {
-      .slot { width: 60px; height: 60px; font-size: 11px; }
-      .gear-circle::before { width: 80%; height: 80%; }
-    }
+    .field-row { display:flex; gap:6px; } .field-row select{flex:2;} .field-row input{flex:1;}
+
+    @media(max-width:500px){ .slot{width:70px;height:70px;font-size:13px;} .gear-circle::before{width:88%;height:88%;} }
+    @media(max-width:380px){ .slot{width:60px;height:60px;font-size:11px;} .gear-circle::before{width:80%;height:80%;} }
   </style>
 </head>
 <body>
@@ -183,126 +74,87 @@
       <h2>Edit Gear</h2>
 
       <label>Tier</label>
-      <select id="tierSelect">
-        <option>Primal</option>
-        <option>Original</option>
-        <option>Chaos</option>
-        <option>Abyss</option>
-      </select>
+      <select id="tierSelect"></select>
 
       <label>Rune</label>
-      <select id="runeSelect">
-        <option>ATK SPD</option>
-        <option>Crit Chance</option>
-        <option>Evasion</option>
-        <option>DR</option>
-        <option>Crit Damage</option>
-      </select>
+      <select id="runeSelect"></select>
       <input type="text" id="runeValue" placeholder="Rune Value">
 
-      <label>Special / Option</label>
-      <input type="text" id="specialInput" placeholder="Special ability">
+      <div id="specialWrapper">
+        <label>Special / Option</label>
+        <input type="text" id="specialInput" placeholder="Special ability">
+      </div>
 
       <div id="lines"></div>
-
       <button class="save" id="saveBtn">Save</button>
     </div>
   </div>
 
-  <script>
-    let currentSlot = null;
+<script>
+  let currentSlot=null, gearDefs=null;
 
-    // Superset of stat options
-    const DEFAULT_STAT_OPTIONS = [
-      'ATK%', 'ATK', 'ATK SPD',
-      'Crit Chance', 'Crit Damage',
-      'HP%', 'HP', 'DEF%', 'DEF',
-      'Evasion', 'Accuracy', 'Block', 'Penetration',
-      'Damage Reduction %', 'Damage Reduction Chance',
-      'Ignore Enemy DEF',
-      'Boss Damage', 'Primate Damage', 'Demon Damage', 'Undead Damage',
-      'Monster Damage',
-      'Lifesteal', 'Skill Damage', 'Weapon Skill',
-      'PvP Damage', 'PvP Damage Reduction'
-    ];
+  async function loadDefs(){
+    const res=await fetch("gearDefs.json");
+    gearDefs=await res.json();
 
-    let statOptions = DEFAULT_STAT_OPTIONS;
-
-    function buildLines() {
-      const linesDiv = document.getElementById("lines");
-      linesDiv.innerHTML = "";
-      for (let i = 1; i <= 4; i++) {
-        const row = document.createElement("div");
-        row.className = "section";
-
-        const label = document.createElement("label");
-        label.textContent = "Line " + i;
-
-        const field = document.createElement("div");
-        field.className = "field-row";
-
-        const sel = document.createElement("select");
-        sel.id = `line${i}Stat`;
-        statOptions.forEach(s => {
-          const o = document.createElement("option");
-          o.value = s; o.text = s;
-          sel.appendChild(o);
-        });
-
-        const val = document.createElement("input");
-        val.type = "number";
-        val.step = "0.01";
-        val.placeholder = "Value";
-        val.id = `line${i}Val`;
-
-        field.appendChild(sel);
-        field.appendChild(val);
-        row.appendChild(label);
-        row.appendChild(field);
-        linesDiv.appendChild(row);
-      }
-    }
-
-    // Open modal when slot clicked
-    document.querySelectorAll('.slot').forEach(slot => {
-      slot.addEventListener('click', () => {
-        currentSlot = slot;
-        buildLines();
-        document.getElementById('gearModal').style.display = 'flex';
-      });
+    // Fill tier select
+    const tierSel=document.getElementById("tierSelect");
+    Object.keys(gearDefs.tiers).forEach(t=>{
+      let o=document.createElement("option"); o.value=t; o.text=t; tierSel.appendChild(o);
     });
 
-    function closeModal() {
-      document.getElementById('gearModal').style.display = 'none';
-    }
-
-    document.getElementById("saveBtn").addEventListener("click", () => {
-      if (!currentSlot) return;
-
-      const slotData = {
-        tier: document.getElementById("tierSelect").value,
-        rune: document.getElementById("runeSelect").value,
-        runeValue: document.getElementById("runeValue").value,
-        special: document.getElementById("specialInput").value,
-        lines: []
-      };
-      for (let i = 1; i <= 4; i++) {
-        slotData.lines.push({
-          stat: document.getElementById(`line${i}Stat`).value,
-          value: document.getElementById(`line${i}Val`).value
-        });
-      }
-      currentSlot.innerText = slotData.tier;
-      if (slotData.special) currentSlot.innerText += "\n" + slotData.special;
-
-      closeModal();
+    // Fill rune select with same stats
+    const runeSel=document.getElementById("runeSelect");
+    gearDefs.stats.forEach(s=>{
+      let o=document.createElement("option"); o.value=s; o.text=s; runeSel.appendChild(o);
     });
+  }
+  loadDefs();
 
-    function clearAll() {
-      document.querySelectorAll('.slot').forEach(slot => {
-        slot.innerText = slot.classList[1]; // reset to original label
-      });
+  function buildLines(tier){
+    const linesDiv=document.getElementById("lines");
+    linesDiv.innerHTML="";
+    let rule=gearDefs.tiers[tier];
+    document.getElementById("specialWrapper").style.display=rule.special?"block":"none";
+
+    for(let i=1;i<=rule.lines;i++){
+      const row=document.createElement("div"); row.className="section";
+      const label=document.createElement("label"); label.textContent="Line "+i;
+      const field=document.createElement("div"); field.className="field-row";
+      const sel=document.createElement("select"); sel.id=`line${i}Stat`;
+      gearDefs.stats.forEach(s=>{let o=document.createElement("option"); o.value=s;o.text=s;sel.appendChild(o);});
+      const val=document.createElement("input"); val.type="number"; val.step="0.01"; val.placeholder="Value"; val.id=`line${i}Val`;
+      field.appendChild(sel);field.appendChild(val); row.appendChild(label);row.appendChild(field); linesDiv.appendChild(row);
     }
-  </script>
+  }
+
+  // Slot click
+  document.querySelectorAll('.slot').forEach(slot=>{
+    slot.addEventListener('click',()=>{
+      currentSlot=slot;
+      buildLines(document.getElementById("tierSelect").value);
+      document.getElementById("gearModal").style.display="flex";
+    });
+  });
+
+  document.getElementById("tierSelect").addEventListener("change",e=>{
+    buildLines(e.target.value);
+  });
+
+  function closeModal(){ document.getElementById("gearModal").style.display="none"; }
+
+  document.getElementById("saveBtn").addEventListener("click",()=>{
+    if(!currentSlot) return;
+    currentSlot.classList.add("filled");
+    closeModal();
+  });
+
+  function clearAll(){
+    document.querySelectorAll('.slot').forEach(slot=>{
+      slot.innerText=slot.classList[1];
+      slot.classList.remove("filled");
+    });
+  }
+</script>
 </body>
 </html>
